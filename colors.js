@@ -1,48 +1,7 @@
-var RGB = {
-  '0': 0,
-  '1': 1,
-  '2': 2,
-  '3': 3,
-  '4': 4,
-  '5': 5,
-  '6': 6,
-  '7': 7,
-  '8': 8,
-  '9': 9,
-  'a': 10,
-  'b': 11,
-  'c': 12,
-  'd': 13,
-  'e': 14,
-  'f': 15
-};
-
-var HEX = {
-   0: '0',
-   1: '1',
-   2: '2',
-   3: '3',
-   4: '4',
-   5: '5',
-   6: '6',
-   7: '7',
-   8: '8',
-   9: '9',
-  10: 'a',
-  11: 'b',
-  12: 'c',
-  13: 'd',
-  14: 'e',
-  15: 'f'
-};
-
-var colorOrder = ['r', 'g', 'b'];
-
 // 255 => 'ff'
 function cToHex(c) {
-  var x = Math.floor(c / 16);
-  var y = c % 16;
-  return [HEX[x],HEX[y]].join('');
+  var hex = c.toString(16);
+  return (hex.length === 1) ? '0' + hex : hex;
 }
 
 // { r:255, g:0, b:0 } => '#ff0000'
@@ -56,10 +15,7 @@ function rgbToHex(rgb) {
 
 // 'ff' => 255
 function hexToC(hex) {
-  var x = hex[0];
-  var y = hex[1];
-
-  return (RGB[x] * 16) + RGB[y]
+  return parseInt(hex, 16);
 }
 // '#ff0000' => { r:255, g:0, b:0 }
 function hexToRgb(hex) {
