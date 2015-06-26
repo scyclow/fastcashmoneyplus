@@ -1,8 +1,8 @@
 // 255 => 'ff'
 function cToHex(c) {
-  var hex = c.toString(16);
+  var hex = Math.round(c).toString(16);
   return (hex.length === 1) ? '0' + hex : hex;
-}
+};
 
 // { r:255, g:0, b:0 } => '#ff0000'
 function rgbToHex(rgb) {
@@ -10,100 +10,91 @@ function rgbToHex(rgb) {
   var g = cToHex(rgb.g);
   var b = cToHex(rgb.b);
 
-  return ['#',r,g,b].join('');
-}
+  return ['#', r, g, b].join('');
+};
 
 // 'ff' => 255
 function hexToC(hex) {
   return parseInt(hex, 16);
-}
+};
 // '#ff0000' => { r:255, g:0, b:0 }
 function hexToRgb(hex) {
-  var r = hexToC( hex.slice(1,3) );
-  var g = hexToC( hex.slice(3,5) );
-  var b = hexToC( hex.slice(5,7) );
+  var r = hexToC( hex.slice(1, 3) );
+  var g = hexToC( hex.slice(3, 5) );
+  var b = hexToC( hex.slice(5, 7) );
 
-  return {r, g, b};
-}
-
-// 0.8 => 51
-function getLow(saturation) {
-  return Math.floor( (1 - saturation) * 255 )
+  return {r: r, g: g, b: b};
 };
 
-// 0.8 => 204
-function getHigh(lightness) {
-  return Math.floor( lightness * 255 );
-}
+// http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
+// {r: 255, g: 0, b: 255} => {h: 100, s: 1, v: 1}
+function rgbToHsv(rgb) {
+  var r = rgb.r / 255;
+  var g = rgb.g / 255;
+  var b = rgb.b / 255;
+  var max = Math.max(r, g, b);
+  var min = Math.min(r, g, b);
+  var diff = max - min;
+  var value = max;
+  var saturation = max ? diff / max : 0;
 
+  var hue;
+  if (!diff) {
+    hue = 0;
 
-function dSaturation(rgb, saturation) {
-  var low  = ;
-  var lowest = 255;
-  var lowKey
-  for (var k in rgb) {
-    if (rgb[k] < lowest) {
-      lowest = rgb[k];
-      lowKey = k;
-  }
-  rgb[lowKey] = low;
-}
+  // For some reason website says "mod 6". This returns wonky
+  // values, while + 6 appears to return the correct values.
+  } else if (r === max) {
+    hue = ((g - b) / diff) + 6;
 
-function dLightness(rgb, lightness) {
-  var highest = 0;
-  var highKey
-  for (var k in rgb) {
-    if (rgb[k] > highest) {
-      lowest = rgb[k];
-      lowKey = k;
-  }
-  rgb[lowKey] = low;
-}
+  } else if (g === max) {
+    hue = ((b - r) / diff) + 2;
 
-// dColor('#ffffff', 10, 0.9, 0.9)
-function dColor(hex, step, saturation, lightness) {
-  var start = Date.now();
-  saturation = saturation || 1;
-  lightness = lightness || 1;
-  var rgb  = hexToRgb(hex);
-
-  var colors = ['r','g','b'];
-  if (step < 0) {
-    colors = colors.reverse();
-    step = step * -1;
+  } else if (b === max) {
+    hue = ((r - g) / diff) + 4;
   }
 
-  for (
-    var c = 0, len = colors.length;
-    c < len;
-    c++
-  ) {
-    var next = c+1 < len ? colors[c+1] : colors[0];
-    var prev = c-1 >= 0  ? colors[c-1] : colors[2];
-    var curr = colors[c];
+  hue *= 60;
 
-    if (rgb[curr] === high) {
-      if (rgb[prev] === low) {
-        rgb[next] += step;
+  return {h: hue, s: saturation, v: value};
+};
 
-        if (rgb[next] > high) {
-          var remainder = rgb[next] - high;
-          rgb[next] = high;
-          var outputHex = rgbToHex(rgb);
-          return dColor(hex, remainder, saturation, lightness);
-        }
-      } else {
-        rgb[prev] -= step;
+function hsvToRgb(hsv) {
+  var c = hsv.v * hsv.s;
+  var h = hsv.h / 60;
+  var x = c * (1 - Math.abs(h % 2 - 1))
+  var m = hsv.v - c;
 
-        if (rgb[prev] < low) {
-          var remainder = low - prev;
-          rgb[low] = prev;
-          var outputHex = rgbToHex(rgb);
-          return dColor(hex, remainder, saturation, lightness);
-        }
-      }
-    } 
-  }
+  var r, g, b;
+  switch( Math.floor(h) ) {
+    case 0:
+    case 6:
+      r = c; g = x; b = 0; break;
+    case 1:
+      r = x; g = c; b = 0; break;
+    case 2:
+      r = 0; g = c; b = x; break;
+    case 3:
+      r = 0; g = x; b = c; break;
+    case 4:
+      r = x; g = 0; b = c; break;
+    case 5:
+      r = c; g = 0; b = x; break;
+  };
 
+  return {
+    r: (r + m) * 255,
+    g: (g + m) * 255,
+    b: (b + m) * 255,
+  };
+};
+
+function hsvToHex(hsv) {
+  var rgb = hsvToRgb(hsv);
   return rgbToHex(rgb);
-}
+};
+
+function increaseHue(hsv) {
+  hsv.h += 1;
+  if (hsv.h > 360) { hsv.h = 0; }
+};
