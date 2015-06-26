@@ -53,20 +53,25 @@ function changeSymbol() {
 
 
 COLOR_CHANGE = 10;//ms
-var textHSV = {h: 180, s: 1, v: 1};
-var backgroundHSV = {h: 0, s:1, v: 1};
+var textHSV = {h: 120, s: 1, v: 1};
+var bodyHSV = {h: 0, s:1, v: 1};
+var backgroundTextHSV = {h: 240, s:1, v: 1};
 
 var body = document.getElementsByTagName('body')[0];
+var background = document.getElementById('background');
 var comingSoon = document.getElementById('coming-soon');
 
 function changeColor() {
   increaseHue(textHSV);
-  increaseHue(backgroundHSV);
+  increaseHue(bodyHSV);
+  increaseHue(backgroundTextHSV);
 
   var text = hsvToHex(textHSV);
   body.style['color'] = text;
   comingSoon.style['border-color'] = text;
-  body.style['background-color'] = hsvToHex(backgroundHSV);
+
+  background.style['color'] = hsvToHex(backgroundTextHSV);;
+  body.style['background-color'] = hsvToHex(bodyHSV);
 }
 
 COLOR_SWITCH = 100;
@@ -76,10 +81,15 @@ function switchColor() {
   if (!SWITCH_ACTIVE) return;
 
   var tmp = textHSV;
-  textHSV = backgroundHSV;
-  backgroundHSV = tmp;
+  textHSV = bodyHSV;
+  bodyHSV = tmp;
 };
 
 function activateSwitch() {
   SWITCH_ACTIVE = !SWITCH_ACTIVE;
-}
+};
+
+function fast() {
+  var symbol = currencySymbols[Math.floor(Math.random() * len)];
+  background.innerHTML += '>'+ symbol+'+';
+};
