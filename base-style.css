@@ -4,31 +4,39 @@
 }
 
 #main-container {
-  position: absolute;
   z-index: 2;
-  vertical-align: middle;
 }
 
 #fast-cash {
-  margin-bottom: 10px;
+  left: 0;
+  right: 0;
+  margin-top: 90px;
+  font-size: 100px;
+  height: 100px;
+  width: 500px;
 }
 
 #coming-soon {
+  margin-top: 80px;
+  font-size: 60px;
   border: 10px solid black;
   border-radius: 10px;
   cursor: pointer;
-  padding: 10px;
+  padding: 20px;
+  width: 450px;
 }
 
 #coming-soon, #fast-cash {
-  font-size: 20px;
   font-weight: 600;
-  display: inline-block;
-  margin: 0 auto;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #background {
-  z-index: 1;
+  z-index: -1;
+  position: absolute;
+  top: 0;
   word-wrap: break-word;
   font-size: 12px;
 }

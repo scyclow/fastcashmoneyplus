@@ -41,11 +41,18 @@ var currencySymbols = [
   '&#8367'  //₯
 ];
 
+CHANGE_SYMBOL = true
+SWITCH_ACTIVE = false;
+FAST_ACTIVE = true;
+CHANGE_COLOR = true;
+
+
 TEXT_CHANGE = 100;//ms
 var $ = document.getElementById('cash');
 var len = currencySymbols.length;
 
 function changeSymbol() {
+  if (!CHANGE_SYMBOL) return;
   var i = Math.floor(Math.random() * len);
   $.innerHTML = currencySymbols[i];
 };
@@ -62,6 +69,8 @@ var background = document.getElementById('background');
 var comingSoon = document.getElementById('coming-soon');
 
 function changeColor() {
+  if (!CHANGE_COLOR) return;
+
   increaseHue(textHSV);
   increaseHue(bodyHSV);
   increaseHue(backgroundTextHSV);
@@ -75,7 +84,6 @@ function changeColor() {
 }
 
 COLOR_SWITCH = 100;
-SWITCH_ACTIVE = false;
 
 function switchColor() {
   if (!SWITCH_ACTIVE) return;
@@ -85,11 +93,25 @@ function switchColor() {
   bodyHSV = tmp;
 };
 
-function activateSwitch() {
+function fast() {
+  if (!FAST_ACTIVE) return;
+
+  var symbol = currencySymbols[Math.floor(Math.random() * len)];
+  background.innerHTML += '>'+ symbol;
+};
+
+function activateSwitchColor() {
   SWITCH_ACTIVE = !SWITCH_ACTIVE;
 };
 
-function fast() {
-  var symbol = currencySymbols[Math.floor(Math.random() * len)];
-  background.innerHTML += '>'+ symbol+'+';
+function activateChangeColor() {
+  CHANGE_COLOR = !CHANGE_COLOR;
+};
+
+function activateFast() {
+  FAST_ACTIVE = !FAST_ACTIVE;
+};
+
+function activateChangeSymbol() {
+  CHANGE_SYMBOL = !CHANGE_SYMBOL;
 };
