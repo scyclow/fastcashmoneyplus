@@ -9,6 +9,7 @@ var soundMovement = 1;
 NOISE_PLAYING = false;
 FREQ_CHANGE = COLOR_CHANGE;
 
+var intervals = [];
 function noiseInterval() {
   oscillator.frequency.value = 0; // value in hertz
   currentInterval = setInterval(function() {
@@ -20,13 +21,14 @@ function noiseInterval() {
     }
     freq.value += soundMovement;
   }, FREQ_CHANGE);
+  intervals.push(currentInterval);
 }
 
+var oscillators = [];
 function startNoise() {
   NOISE_PLAYING = true;
 
   oscillator = audioCtx.createOscillator();
-
   oscillator.connect(gainNode);
 
   oscillator.type = 'square';
@@ -34,15 +36,19 @@ function startNoise() {
   oscillator.frequency.value = 8000;
   oscillator.start(0);
   setTimeout(noiseInterval, 100);
+  oscillators.push(oscillator);
 };
 
 function endNoise() {
   NOISE_PLAYING = false;
-  clearInterval(currentInterval);
-  //oscillator.stop();  // not clearing sounds fucking awesome.
+  oscillators.forEach(function(osc) {
+    osc.stop();  // not clearing sounds fucking awesome.
+  });
+  intervals.forEach(clearInterval);
 };
 
 function makeNoise() {
-  if (NOISE_PLAYING) { endNoise(); }
-  else { startNoise(); }
+  // if (NOISE_PLAYING) { endNoise(); }
+  // else { startNoise(); }
+  startNoise();
 }

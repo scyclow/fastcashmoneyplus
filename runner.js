@@ -21,5 +21,5 @@ window.onkeydown = function(e){
   if (e.keyCode === 86) { activateChangeColor(); } // v
   if (e.keyCode === 66) { activateFast(); } // b
   if (e.keyCode === 78) { activateChangeSymbol(); } // n
-  if (e.keyCode === 77) { } // m
+  if (e.keyCode === 77) { endNoise(); } // m
 };
