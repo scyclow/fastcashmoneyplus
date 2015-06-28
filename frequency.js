@@ -30,8 +30,8 @@ function startNoise() {
   oscillator.connect(gainNode);
 
   oscillator.type = 'square';
-  oscillator.detune.value = 100; // value in cents
-  oscillator.frequency.value = 8000; // value in hertz
+  oscillator.detune.value = 100;
+  oscillator.frequency.value = 8000;
   oscillator.start(0);
   setTimeout(noiseInterval, 100);
 };
@@ -39,7 +39,7 @@ function startNoise() {
 function endNoise() {
   NOISE_PLAYING = false;
   clearInterval(currentInterval);
-  oscillator.stop();
+  //oscillator.stop();  // not clearing sounds fucking awesome.
 };
 
 function makeNoise() {
