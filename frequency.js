@@ -1,7 +1,15 @@
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-var gainNode = audioCtx.createGain();
-gainNode.gain.value = 0.02;
-gainNode.connect(audioCtx.destination);
+
+var audioCtx, gainNode
+var inited = false
+function init() {
+  if (inited) return false;
+  inited = true;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  gainNode = audioCtx.createGain();
+  gainNode.gain.value = 0.02;
+  gainNode.connect(audioCtx.destination);
+}
+
 var oscillator;
 var currentInterval;
 var soundMovement = 1;
@@ -9,9 +17,15 @@ var soundMovement = 1;
 NOISE_PLAYING = false;
 FREQ_CHANGE = COLOR_CHANGE;
 
+function smoothTo(obj, ctx, value, timeInSeconds) {
+  obj.exponentialRampToValueAtTime(value, ctx.currentTime + timeInSeconds)
+}
+
+
 var intervals = [];
 function noiseInterval() {
-  oscillator.frequency.value = 0; // value in hertz
+  smoothTo(oscillator.frequency, audioCtx, 10, 0.25)
+
   currentInterval = setInterval(function() {
     var freq = oscillator.frequency;
     if (freq.value >= 1020) {
@@ -50,5 +64,6 @@ function endNoise() {
 function makeNoise() {
   // if (NOISE_PLAYING) { endNoise(); }
   // else { startNoise(); }
+  init()
   startNoise();
 }
